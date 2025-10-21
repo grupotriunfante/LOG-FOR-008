@@ -68,7 +68,8 @@
                         <option value="" disabled selected>Selecione...</option>
                         <option value="ABC">ABC</option><option value="TCV">TCV</option><option value="TBE">TBE</option>
                         <option value="TSJ">TSJ</option><option value="TCA">TCA</option><option value="API">API</option><option value="TPH">TPH</option>
-                        <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option>
+                        <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="TCB">TCB</option>
+                        
                     </select>
                 </div>
             </div>
@@ -76,8 +77,8 @@
                 <label for="motivo">MOTIVO</label>
                 <select id="motivo" required>
                     <option value="" disabled selected>Selecione...</option>
-                    <option value="Trocas">Trocas</option><option value="Devolucoes">Devoluções</option><option value="Avarias Externas">Avarias Externas</option>
-                    <option value="Avaria Interna">Avaria Interna</option><option value="Vencimento">Vencimento</option>
+                    <option value="Trocas">Trocas Por Vencimento</option><option value="Devolucoes">Devoluções</option><option value="Avarias Externas">Avarias Externas (Freteiros)</option>
+                    <option value="Avaria Interna">Avaria Interna</option><option value="Vencimento">Vencimento</option><option value="Ajuste de Invenrário">Ajuste de Inventário</option>
                 </select>
             </div>
             <div class="form-group">
@@ -89,11 +90,13 @@
                     <option value="599.84 - Saida por Perda/Validade">599.84 - Saida por Perda/Validade</option>
                     <option value="599.85 - Saida por Perda/Operacional">599.85 - Saida por Perda/Operacional</option>
                     <option value="512.92 - Baixa p/Consumo">512.92 - Baixa p/Consumo</option>
+                    <option value="599.82 - Saida p/ Ajuste Inventário">599.82 - Saida por Ajuste Inventário</option>
+                    <option value="199.96 - Entrada p/ Ajuste Inventário">199.96 - Entrada p/ Ajuste Inventário</option>
                 </select>
             </div>
              <div class="form-group">
                 <label for="anexoEvidencia">ANEXAR EVIDÊNCIA (NF, Relatório de Falta de Produtos)</label>
-                <input type="file" id="anexoEvidencia" accept="image/*,application/pdf">
+                <input type="file" id="anexoEvidencia" accept="image/*,application/pdf" required>
             </div>
             <div class="form-group" id="notaFiscalGroup" style="display: none;"><label for="notaFiscal">Nº NOTA FISCAL</label><input type="text" id="notaFiscal" placeholder="Digite o número da NF"></div>
             
@@ -241,6 +244,16 @@
             
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
+                
+                // MUDANÇA 2: Adicionada validação do anexo obrigatório
+                const anexoInput = document.getElementById('anexoEvidencia');
+                if (anexoInput.files.length === 0) {
+                    alert('É OBRIGATÓRIO anexar uma evidência (NF, Relatório, etc.).');
+                    anexoInput.focus(); // Ajuda o usuário a focar no campo
+                    return; // Para a execução
+                }
+                // Fim da MUDANÇA 2
+
                 if (productListTbody.rows.length === 0) {
                     alert('Adicione pelo menos um item para baixa.'); return;
                 }
