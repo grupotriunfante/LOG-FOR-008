@@ -12,18 +12,18 @@
         .form-group { margin-bottom: 20px; }
         label { display: block; font-weight: 600; margin-bottom: 8px; color: #555; }
         input[type="date"], input[type="text"], input[type="file"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; transition: border-color 0.3s; }
-        input#valorProduto, input#valorTotalProduto { text-align: right; }
+        /* Alinha o texto do campo de valor à direita para parecer moeda */
+        input#valorProduto { text-align: right; }
         input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
         input:focus, select:focus { border-color: #0078d4; outline: none; }
         .product-section { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background-color: #fcfcfc; margin-top: 25px; }
         .product-section h2 { display: flex; align-items: center; gap: 10px; }
-        .product-inputs { display: grid; grid-template-columns: 1fr 3fr 0.8fr 1.2fr 1.2fr; gap: 15px; align-items: flex-end; }
+        /* CSS RESTAURADO PARA O ORIGINAL ABAIXO */
+        .product-inputs { display: grid; grid-template-columns: 1fr 3fr 1fr 1.5fr; gap: 15px; align-items: flex-end; }
         .add-button-container { text-align: center; margin-top: 20px; }
         .product-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         .product-table th, .product-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         .product-table th { background-color: #f2f2f2; font-weight: 600; }
-        .product-table tfoot td { font-weight: bold; font-size: 1.1em; background-color: #f9f9f9; border-top: 2px solid #ccc; }
-        .product-table tfoot #total-geral-label { text-align: right; }
         .signature-pad-container { border: 1px dashed #ccc; border-radius: 6px; position: relative; }
         #signature-canvas { width: 100%; height: 180px; cursor: crosshair; }
         .button { padding: 12px 20px; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.3s, opacity 0.3s; white-space: nowrap; }
@@ -39,62 +39,110 @@
         #status-message { margin-top: 20px; padding: 15px; border-radius: 6px; text-align: center; font-weight: 600; display: none; }
         .status-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .status-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .footer-info { text-align: right; font-size: 12px; color: #888; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; }
+        
+        /* CÓDIGO ADICIONADO */
+        .footer-info {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Formulário de Solicitação de Baixa de Estoque</h1>
         <form id="baixa-form">
-            <div class="form-group"> <label for="codigoRegistro">CÓDIGO DE REGISTRO</label> <input type="text" id="codigoRegistro" readonly> </div>
-            <div class="form-grid"> <div class="form-group"><label for="dataSolicitacao">DATA</label><input type="date" id="dataSolicitacao" required></div> <div class="form-group"><label for="solicitante">SOLICITANTE</label><input type="text" id="solicitante" placeholder="Nome do solicitante" required></div> <div class="form-group"> <label for="unidade">UNIDADE</label> <select id="unidade" required> <option value="" disabled selected>Selecione...</option> <option value="ABC">ABC</option><option value="TCV">TCV</option><option value="TBE">TBE</option> <option value="TSJ">TSJ</option><option value="TCA">TCA</option><option value="API">API</option><option value="TPH">TPH</option> <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="MCD">TCB</option> </select> </div> </div> <div class="form-group"> <label for="motivo">MOTIVO</label> <select id="motivo" required> <option value="" disabled selected>Selecione...</option> <option value="Trocas">Trocas</option><option value="Devolucoes">Devoluções</option><option value="Avarias Externas">Avarias Externas</option> <option value="Avaria Interna">Avaria Interna</option><option value="Vencimento">Vencimento</option> </select> </div> <div class="form-group"> <label for="operacaoFiscalGeral">OPERAÇÃO FISCAL (Para todos os itens)</label> <select id="operacaoFiscalGeral" required> <option value="" disabled selected>Selecione...</option> <option value="599.96 - Saida P/Perda, Roubo, etc">599.96 - Saida P/Perda, Roubo, etc</option> <option value="599.83 - Saida por Perda/Avaria ">599.83 - Saida por Perda/Avaria</option> <option value="599.84 - Saida por Perda/Validade">599.84 - Saida por Perda/Validade</option> <option value="599.85 - Saida por Perda/Operacional">599.85 - Saida por Perda/Operacional</option> <option value="512.92 - Baixa p/Consumo">512.92 - Baixa p/Consumo</option> </select> </div> <div class="form-group"> <label for="anexoEvidencia">ANEXAR EVIDÊNCIA (NF, Relatório de Falta de Produtos)</label> <input type="file" id="anexoEvidencia" accept="image/*,application/pdf"> </div> <div class="form-group" id="notaFiscalGroup" style="display: none;"><label for="notaFiscal">Nº NOTA FISCAL</label><input type="text" id="notaFiscal" placeholder="Digite o número da NF"></div>
-            
+            <div class="form-group">
+                <label for="codigoRegistro">CÓDIGO DE REGISTRO</label>
+                <input type="text" id="codigoRegistro" readonly>
+            </div>
+            <div class="form-grid">
+                <div class="form-group"><label for="dataSolicitacao">DATA</label><input type="date" id="dataSolicitacao" required></div>
+                <div class="form-group"><label for="solicitante">SOLICITANTE</label><input type="text" id="solicitante" placeholder="Nome do solicitante" required></div>
+                <div class="form-group">
+                    <label for="unidade">UNIDADE</label>
+                    <select id="unidade" required>
+                        <option value="" disabled selected>Selecione...</option>
+                        <option value="ABC">ABC</option><option value="TCV">TCV</option><option value="TBE">TBE</option>
+                        <option value="TSJ">TSJ</option><option value="TCA">TCA</option><option value="API">API</option><option value="TPH">TPH</option>
+                        <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="TCB">TCB</option>                                            
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="motivo">MOTIVO</label>
+                <select id="motivo" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="Devolucoes">Devoluções</option>
+                    <option value="Avarias Externas">Avarias Externas (Freteiros)</option>
+                    <option value="Avaria Interna">Avaria Interna</option>
+                    <option value="Vencimento">Vencimento</option>
+                    <option value="Ajuste de Inventario">Ajuste de Inventário</option> </select>
+            </div>
+            <div class="form-group">
+                <label for="operacaoFiscalGeral">OPERAÇÃO FISCAL (Para todos os itens)</label>
+                <select id="operacaoFiscalGeral" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="599.96 - Saida P/Perda, Roubo, etc">599.96 - Saida P/Perda, Roubo, etc</option>
+                    <option value="599.83 - Saida por Perda/Avaria ">599.83 - Saida por Perda/Avaria</option>
+                    <option value="599.84 - Saida por Perda/Validade">599.84 - Saida por Perda/Validade</option>
+                    <option value="599.85 - Saida por Perda/Operacional">599.85 - Saida por Perda/Operacional</option>
+                    <option value="512.92 - Baixa p/Consumo">512.92 - Baixa p/Consumo</option>
+                    <option value="599.82 - Saida p/ Ajuste Inventário">599.82 - Saida por Ajuste Inventário</option>
+                    <option value="199.96 - Entrada p/ Ajuste Inventário">199.96 - Entrada p/ Ajuste Inventário</option>
+                </select>
+            </div>
+             <div class="form-group">
+                <label for="anexoEvidencia">ANEXAR EVIDÊNCIA (NF, Relatório de Falta de Produtos)</label>
+                <input type="file" id="anexoEvidencia" accept="image/*,application/pdf" required>
+            </div>
+            <div class="form-group" id="notaFiscalGroup" style="display: none;"><label for="notaFiscal">Nº NOTA FISCAL</label><input type="text" id="notaFiscal" placeholder="Digite o número da NF"></div>
+                        
             <div class="product-section">
                 <h2>ITENS PARA BAIXA</h2>
                 <div class="product-inputs">
                     <div class="form-group"><label for="codigoProduto">Cód. Produto</label><input type="text" id="codigoProduto"></div>
                     <div class="form-group"><label for="descricaoProduto">Descrição</label><input type="text" id="descricaoProduto" maxlength="60"></div>
-                    <div class="form-group"><label for="quantidadeProduto">Quant.</label><input type="number" id="quantidadeProduto" min="1" value="1"></div>
-                    <div class="form-group"><label for="valorProduto">Valor Unit. (custo)</label><input type="text" id="valorProduto" placeholder="0,00"></div>
-                    <div class="form-group"><label for="valorTotalProduto">Preço Total (R$)</label><input type="text" id="valorTotalProduto" placeholder="0,00" readonly></div>
+                    <div class="form-group"><label for="quantidadeProduto">Quant.</label><input type="number" id="quantidadeProduto" min="1"></div>
+                    <div class="form-group"><label for="valorProduto">Valor (custo)</label><input type="text" id="valorProduto" placeholder="0,00"></div>
                 </div>
                 <div class="add-button-container">
                     <button type="button" id="add-product-btn" class="button button-secondary">Adicionar Item à Lista</button>
                 </div>
-                
                 <table class="product-table">
-                    <thead>
-                        <tr>
-                            <th>Cód. Produto</th>
-                            <th>Descrição</th>
-                            <th>Quant.</th>
-                            <th>Valor Unit. (R$)</th>
-                            <th>Preço Total (R$)</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Cód. Produto</th><th>Descrição</th><th>Quant.</th><th>Valor (R$)</th><th>Ação</th></tr></thead>
                     <tbody id="product-list"></tbody>
-                    <tfoot>
-                        <tr>
-                            <td id="total-geral-label" colspan="4">Total Geral:</td>
-                            <td id="total-geral-produtos">R$ 0,00</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
-            
-            <button type="submit" id="submit-btn" class="button button-primary">Revisar para Enviar</button> 
-            <div id="confirmation-section" style="display: none;"> <div class="form-group"> <label for="signature-canvas">ASSINATURA DO SOLICITANTE (OBRIGATÓRIO)</label> <div class="signature-pad-container"><canvas id="signature-canvas"></canvas></div> <div class="button-group"><button type="button" id="clear-signature-btn" class="button button-secondary">Limpar</button></div> </div> <div class="form-group" id="confirm-checkbox-group"> <input type="checkbox" id="confirm-checkbox"> <label for="confirm-checkbox" style="margin: 0;">Declaro que revisei todas as informações desta solicitação de baixa e confirmo sua veracidade.</label> </div> <button type="button" id="final-submit-btn" class="button button-primary" disabled>Confirmar e Enviar Solicitação</button> </div>
+
+            <button type="submit" id="submit-btn" class="button button-primary">Revisar para Enviar</button>
+
+            <div id="confirmation-section" style="display: none;">
+                <div class="form-group">
+                    <label for="signature-canvas">ASSINATURA DO SOLICITANTE (OBRIGATÓRIO)</label>
+                    <div class="signature-pad-container"><canvas id="signature-canvas"></canvas></div>
+                    <div class="button-group"><button type="button" id="clear-signature-btn" class="button button-secondary">Limpar</button></div>
+                </div>
+                <div class="form-group" id="confirm-checkbox-group">
+                    <input type="checkbox" id="confirm-checkbox">
+                    <label for="confirm-checkbox" style="margin: 0;">Declaro que revisei todas as informações desta solicitação de baixa e confirmo sua veracidade.</label>
+                </div>
+                <button type="button" id="final-submit-btn" class="button button-primary" disabled>Confirmar e Enviar Solicitação</button>
+            </div>
         </form>
         <div id="status-message"></div>
-        <div class="footer-info"> LOG-GOR-008 | Rev01 | 20/10/2025 </div>
+
+        <div class="footer-info">
+            LOG-GOR-008 | Rev01 | 20/10/2025
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Todos os seletores (NÃO MUDOU)
             const form = document.getElementById('baixa-form');
             const submitBtn = document.getElementById('submit-btn');
             const confirmationSection = document.getElementById('confirmation-section');
@@ -110,55 +158,30 @@
             const valorProdutoInput = document.getElementById('valorProduto');
             const canvas = document.getElementById('signature-canvas');
             const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
-            const quantidadeProdutoInput = document.getElementById('quantidadeProduto');
-            const valorTotalProdutoInput = document.getElementById('valorTotalProduto');
-            const totalGeralProdutosCell = document.getElementById('total-geral-produtos');
 
-            // Todas as funções de cálculo e formatação (NÃO MUDOU)
-            function parseCurrency(valorString) {
-                if (!valorString) return 0;
-                return parseFloat(
-                    String(valorString)
-                        .replace('R$ ', '')
-                        .replace(/\./g, '')  
-                        .replace(',', '.')   
-                ) || 0;
-            }
-            function formatToBRL(value) {
-                return new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                }).format(value);
-            }
-            function formatToNumericBRL(value) {
-                 return new Intl.NumberFormat('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(value);
-            }
-            function calcularPrecoTotalInput() {
-                const quantidade = parseFloat(quantidadeProdutoInput.value) || 0;
-                const valorUnit = parseCurrency(valorProdutoInput.value);
-                const total = quantidade * valorUnit;
-                valorTotalProdutoInput.value = formatToNumericBRL(total);
-            }
-            function atualizarSomaTotal() {
-                let somaGeral = 0;
-                const todasAsLinhas = productListTbody.querySelectorAll('tr');
-                todasAsLinhas.forEach(linha => {
-                    const celulaTotal = linha.cells[4]; 
-                    if (celulaTotal) {
-                        somaGeral += parseCurrency(celulaTotal.innerText);
-                    }
-                });
-                totalGeralProdutosCell.textContent = formatToBRL(somaGeral);
-            }
+            // --- INÍCIO DA LÓGICA ADICIONADA ---
+            const operacaoFiscalSelect = document.getElementById('operacaoFiscalGeral');
+            // Salva as opções originais de Operação Fiscal
+            const originalOperacoesFiscais = operacaoFiscalSelect.innerHTML; 
+            
+            // Define as novas opções para "Ajuste de Inventário"
+            const ajusteOptions = `
+                <option value="" disabled selected>Selecione...</option>
+                <option value="199.96 - Entrada p/ Ajuste Inventário">199.96 - Entrada p/ Ajuste Inventário</option>
+                <option value="599.82 - Saida p/ Ajuste Inventário">599.82 - Saida por Ajuste Inventário</option>
+            `;
+            // --- FIM DA LÓGICA ADICIONADA ---
+
             function generateUniqueShortCode() {
                 const timeComponent = String(Date.now()).slice(-5);
                 const randomComponent = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
                 return `REG-${timeComponent}-${randomComponent}`;
             }
-            function setInitialCode() { codigoRegistroInput.value = generateUniqueShortCode(); }
+
+            function setInitialCode() { 
+                codigoRegistroInput.value = generateUniqueShortCode();
+            }
+
             function resizeCanvas() {
                 const ratio = Math.max(window.devicePixelRatio || 1, 1);
                 canvas.width = canvas.offsetWidth * ratio;
@@ -171,79 +194,94 @@
                 const isCheckboxChecked = confirmCheckbox.checked;
                 finalSubmitBtn.disabled = isSignatureEmpty || !isCheckboxChecked;
             }
+                        
             const toBase64 = file => new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => resolve(reader.result);
                 reader.onerror = error => reject(error);
             });
+
             function formatCurrency(input) {
                 let value = input.value.replace(/\D/g, '');
-                if (value === '') { input.value = ''; return; }
+                if (value === '') {
+                    input.value = '';
+                    return;
+                }
                 const numberValue = parseFloat(value) / 100;
-                input.value = formatToNumericBRL(numberValue);
+                input.value = new Intl.NumberFormat('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(numberValue);
             }
-            
-            // Todos os Listeners de interação (NÃO MUDOU)
-            setInitialCode();
-            calcularPrecoTotalInput();
-            window.addEventListener('resize', resizeCanvas);
+
             valorProdutoInput.addEventListener('input', () => {
                 formatCurrency(valorProdutoInput);
-                calcularPrecoTotalInput();
             });
-            quantidadeProdutoInput.addEventListener('input', calcularPrecoTotalInput);
+
+            setInitialCode();
+            window.addEventListener('resize', resizeCanvas);
+
+            // --- LISTENER DO MOTIVO MODIFICADO ---
             motivoSelect.addEventListener('change', () => {
-                const showNotaFiscal = ['Trocas', 'Devolucoes', 'Avarias Externas'].includes(motivoSelect.value);
+                // Lógica da Nota Fiscal (Remove 'Trocas' da verificação)
+                const showNotaFiscal = ['Devolucoes', 'Avarias Externas'].includes(motivoSelect.value);
                 notaFiscalGroup.style.display = showNotaFiscal ? 'block' : 'none';
                 notaFiscalInput.required = showNotaFiscal;
                 if (!showNotaFiscal) notaFiscalInput.value = '';
+
+                // Lógica da Operação Fiscal
+                if (motivoSelect.value === 'Ajuste de Inventario') { // Valor corrigido
+                    operacaoFiscalSelect.innerHTML = ajusteOptions;
+                    operacaoFiscalSelect.required = true; 
+                } else {
+                    operacaoFiscalSelect.innerHTML = originalOperacoesFiscais;
+                    operacaoFiscalSelect.required = true; 
+                }
             });
+            // --- FIM DA MODIFICAÇÃO ---
+            
             document.getElementById('clear-signature-btn').addEventListener('click', () => {
                 signaturePad.clear();
                 checkFinalReadiness();
             });
+                        
             addProductBtn.addEventListener('click', () => {
                 const inputs = {
                     codigo: document.getElementById('codigoProduto'),
                     descricao: document.getElementById('descricaoProduto'),
                     quantidade: document.getElementById('quantidadeProduto'),
-                    valorUnit: document.getElementById('valorProduto'),
-                    valorTotal: document.getElementById('valorTotalProduto')
+                    valor: document.getElementById('valorProduto')
                 };
-                if (!inputs.codigo.value.trim() || !inputs.descricao.value.trim() || !inputs.quantidade.value.trim() || !inputs.valorUnit.value.trim()) {
-                    alert('Por favor, preencha todos os campos do item (Cód, Descrição, Quant. e Valor Unit.).'); return;
+                if (!inputs.codigo.value.trim() || !inputs.descricao.value.trim() || !inputs.quantidade.value.trim() || !inputs.valor.value.trim()) {
+                    alert('Por favor, preencha todos os campos do item (Cód, Descrição, Quant. e Valor).'); return;
                 }
                 if (parseFloat(inputs.quantidade.value) <= 0) { 
-                     alert('A quantidade deve ser maior que zero.'); return; 
+                    alert('A quantidade deve ser maior que zero.'); return; 
                 }
-                const valorUnitFormatado = inputs.valorUnit.value;
-                const valorTotalFormatado = inputs.valorTotal.value;
+                                
+                const valorFormatado = inputs.valor.value;
                 const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${inputs.codigo.value}</td>
-                    <td>${inputs.descricao.value}</td>
-                    <td>${inputs.quantidade.value}</td>
-                    <td>R$ ${valorUnitFormatado}</td>
-                    <td>R$ ${valorTotalFormatado}</td>
-                    <td><button type="button" class="button button-danger remove-product-btn">Remover</button></td>
-                `;
+                newRow.innerHTML = `<td>${inputs.codigo.value}</td><td>${inputs.descricao.value}</td><td>${inputs.quantidade.value}</td><td>R$ ${valorFormatado}</td><td><button type="button" class="button button-danger remove-product-btn">Remover</button></td>`;
                 productListTbody.appendChild(newRow);
-                inputs.codigo.value = '';
-                inputs.descricao.value = '';
-                inputs.quantidade.value = '1';
-                inputs.valorUnit.value = '';
-                inputs.valorTotal.value = '0,00';
-                atualizarSomaTotal();
+                Object.values(inputs).forEach(input => { input.value = ''; });
             });
+                        
             productListTbody.addEventListener('click', (event) => {
-                if (event.target.classList.contains('remove-product-btn')) { 
-                    event.target.closest('tr').remove(); 
-                    atualizarSomaTotal();
-                }
+                if (event.target.classList.contains('remove-product-btn')) { event.target.closest('tr').remove(); }
             });
+                        
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
+                                
+                // Validação do anexo obrigatório
+                const anexoInput = document.getElementById('anexoEvidencia');
+                if (anexoInput.files.length === 0) {
+                    alert('É OBRIGATÓRIO anexar uma evidência (NF, Relatório, etc.).');
+                    anexoInput.focus(); // Ajuda o usuário a focar no campo
+                    return; // Para a execução
+                }
+                
                 if (productListTbody.rows.length === 0) {
                     alert('Adicione pelo menos um item para baixa.'); return;
                 }
@@ -252,17 +290,15 @@
                 resizeCanvas();
                 confirmationSection.scrollIntoView({ behavior: 'smooth' });
             });
+                        
             signaturePad.addEventListener("endStroke", checkFinalReadiness);
             confirmCheckbox.addEventListener('change', checkFinalReadiness);
-
-            // ==================================================================
-            // === ENVIO FINAL (ÚNICA PARTE MODIFICADA DE VOLTA AO ORIGINAL) ===
-            // ==================================================================
+                        
             finalSubmitBtn.addEventListener('click', async () => {
                 finalSubmitBtn.disabled = true;
                 finalSubmitBtn.textContent = 'Enviando...';
                 showStatusMessage('', '');
-
+                                
                 const anexoInput = document.getElementById('anexoEvidencia');
                 let anexoBase64 = null;
                 let anexoNome = null;
@@ -272,24 +308,20 @@
                     anexoNome = anexoInput.files[0].name;
                 }
 
-                // AQUI ESTÁ A MUDANÇA:
-                // Vamos montar o array de produtos exatamente como era no seu script original
                 const produtos = Array.from(productListTbody.rows).map(row => {
-                    // O "Valor Unit." está na célula [3]
-                    // O "Preço Total" está na célula [4] (e será ignorado)
-                    const valorUnitarioString = row.cells[3].innerText; // Ex: "R$ 1,50"
-                                        
+                    const valorString = row.cells[3].innerText
+                        .replace('R$ ', '')
+                        .replace(/\./g, '')
+                        .replace(',', '.');
+                                            
                     return {
                         codigo: row.cells[0].innerText,
                         descricao: row.cells[1].innerText,
                         quantidade: parseInt(row.cells[2].innerText),
-                        valor: parseCurrency(valorUnitarioString) // <-- MÁGICA: Enviando o valor unitário no campo "valor"
+                        valor: parseFloat(valorString),
                     };
                 });
-                
-                // AQUI ESTÁ A SEGUNDA MUDANÇA:
-                // Vamos montar o formData exatamente como era no original,
-                // sem o campo "somaTotalGeral"
+                                
                 const formData = {
                     codigoRegistro: codigoRegistroInput.value,
                     dataSolicitacao: document.getElementById('dataSolicitacao').value,
@@ -298,13 +330,12 @@
                     motivo: document.getElementById('motivo').value,
                     operacaoFiscal: document.getElementById('operacaoFiscalGeral').value,
                     notaFiscal: document.getElementById('notaFiscal').value,
-                    produtos: produtos, // <--- Array no formato original
+                    produtos: produtos,
                     assinaturaBase64: signaturePad.toDataURL('image/png'),
                     anexo: {
                         nomeArquivo: anexoNome,
                         conteudoBase64: anexoBase64
                     }
-                    // O campo "somaTotalGeral" NÃO é enviado
                 };
 
                 const powerAutomateUrl = 'https://defaultaf73075ee5864d09b8b3d44b758089.52.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/63717d9cc7d3450faf2111398ab71cd3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=3g6ACT7sgX-s0kU_db9lnRIYQN-c0iCpsN9bEkzS3fs'; 
@@ -312,15 +343,14 @@
                     const response = await fetch(powerAutomateUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData), // Envia o JSON no formato antigo
+                        body: JSON.stringify(formData),
                     });
                     if (response.ok) {
                         showStatusMessage('Solicitação de baixa enviada com sucesso!', 'success');
                         form.reset();
-                        motivoSelect.dispatchEvent(new Event('change'));
+                        motivoSelect.dispatchEvent(new Event('change')); // Redefine os campos condicionais
                         signaturePad.clear();
                         productListTbody.innerHTML = '';
-                        atualizarSomaTotal();
                         confirmationSection.style.display = 'none';
                         submitBtn.style.display = 'block';
                         confirmCheckbox.checked = false;
@@ -334,8 +364,7 @@
                     finalSubmitBtn.textContent = 'Confirmar e Enviar Solicitação';
                 }
             });
-            
-            // Função de status (NÃO MUDOU)
+                        
             function showStatusMessage(message, type) {
                 statusMessageDiv.textContent = message;
                 statusMessageDiv.className = `status-${type}`;
