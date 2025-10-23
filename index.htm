@@ -18,7 +18,6 @@
         input:focus, select:focus { border-color: #0078d4; outline: none; }
         .product-section { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background-color: #fcfcfc; margin-top: 25px; }
         .product-section h2 { display: flex; align-items: center; gap: 10px; }
-        /* CSS RESTAURADO PARA O ORIGINAL ABAIXO */
         .product-inputs { display: grid; grid-template-columns: 1fr 3fr 1fr 1.5fr; gap: 15px; align-items: flex-end; }
         .add-button-container { text-align: center; margin-top: 20px; }
         .product-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
@@ -40,7 +39,6 @@
         .status-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .status-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         
-        /* CÓDIGO ADICIONADO */
         .footer-info {
             text-align: right;
             font-size: 12px;
@@ -68,7 +66,7 @@
                         <option value="" disabled selected>Selecione...</option>
                         <option value="ABC">ABC</option><option value="TCV">TCV</option><option value="TBE">TBE</option>
                         <option value="TSJ">TSJ</option><option value="TCA">TCA</option><option value="API">API</option><option value="TPH">TPH</option>
-                        <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="TCB">TCB</option>                                            
+                        <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="TCB">TCB</option>
                     </select>
                 </div>
             </div>
@@ -80,7 +78,8 @@
                     <option value="Avarias Externas">Avarias Externas (Freteiros)</option>
                     <option value="Avaria Interna">Avaria Interna</option>
                     <option value="Vencimento">Vencimento</option>
-                    <option value="Ajuste de Inventario">Ajuste de Inventário</option> </select>
+                    <option value="Ajuste de Inventario">Ajuste de Inventário</option> 
+                </select>
             </div>
             <div class="form-group">
                 <label for="operacaoFiscalGeral">OPERAÇÃO FISCAL (Para todos os itens)</label>
@@ -158,11 +157,12 @@
             const valorProdutoInput = document.getElementById('valorProduto');
             const canvas = document.getElementById('signature-canvas');
             const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
+            const anexoInput = document.getElementById('anexoEvidencia'); // <-- VARIÁVEL DEFINIDA AQUI
 
             // --- INÍCIO DA LÓGICA ADICIONADA ---
             const operacaoFiscalSelect = document.getElementById('operacaoFiscalGeral');
             // Salva as opções originais de Operação Fiscal
-            const originalOperacoesFiscais = operacaoFiscalSelect.innerHTML; 
+            const originalOperacoesFiscais = operacaoFiscalSelect.innerHTML;
             
             // Define as novas opções para "Ajuste de Inventário"
             const ajusteOptions = `
@@ -245,7 +245,26 @@
                 signaturePad.clear();
                 checkFinalReadiness();
             });
-                        
+
+            // <-- NOVO BLOCO DE CÓDIGO PARA VALIDAR O ARQUIVO -->
+            anexoInput.addEventListener('change', () => {
+                if (anexoInput.files.length > 0) {
+                    const file = anexoInput.files[0];
+                    const maxFileSize = 4 * 1024 * 1024; // 4MB em bytes
+
+                    if (file.size > maxFileSize) {
+                        showStatusMessage('Arquivo muito grande. O limite é de 4MB. Por favor, escolha um arquivo menor.', 'error');
+                        anexoInput.value = ''; // Limpa o campo de arquivo
+                    } else {
+                        // Se houver uma mensagem de erro anterior, limpa
+                        if (statusMessageDiv.classList.contains('status-error')) {
+                            showStatusMessage('', '');
+                        }
+                    }
+                }
+            });
+            // <-- FIM DO NOVO BLOCO -->
+                                
             addProductBtn.addEventListener('click', () => {
                 const inputs = {
                     codigo: document.getElementById('codigoProduto'),
@@ -266,16 +285,15 @@
                 productListTbody.appendChild(newRow);
                 Object.values(inputs).forEach(input => { input.value = ''; });
             });
-                        
+                                
             productListTbody.addEventListener('click', (event) => {
                 if (event.target.classList.contains('remove-product-btn')) { event.target.closest('tr').remove(); }
             });
-                        
+                                
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
-                                
+                                        
                 // Validação do anexo obrigatório
-                const anexoInput = document.getElementById('anexoEvidencia');
                 if (anexoInput.files.length === 0) {
                     alert('É OBRIGATÓRIO anexar uma evidência (NF, Relatório, etc.).');
                     anexoInput.focus(); // Ajuda o usuário a focar no campo
@@ -290,20 +308,20 @@
                 resizeCanvas();
                 confirmationSection.scrollIntoView({ behavior: 'smooth' });
             });
-                        
+                                
             signaturePad.addEventListener("endStroke", checkFinalReadiness);
             confirmCheckbox.addEventListener('change', checkFinalReadiness);
-                        
+                                
             finalSubmitBtn.addEventListener('click', async () => {
                 finalSubmitBtn.disabled = true;
                 finalSubmitBtn.textContent = 'Enviando...';
                 showStatusMessage('', '');
-                                
-                const anexoInput = document.getElementById('anexoEvidencia');
+                                        
                 let anexoBase64 = null;
                 let anexoNome = null;
 
                 if (anexoInput.files.length > 0) {
+                    // Validação de tamanho já foi feita no evento 'change'
                     anexoBase64 = await toBase64(anexoInput.files[0]);
                     anexoNome = anexoInput.files[0].name;
                 }
@@ -364,7 +382,7 @@
                     finalSubmitBtn.textContent = 'Confirmar e Enviar Solicitação';
                 }
             });
-                        
+                                
             function showStatusMessage(message, type) {
                 statusMessageDiv.textContent = message;
                 statusMessageDiv.className = `status-${type}`;
