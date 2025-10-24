@@ -49,7 +49,7 @@
         <form id="baixa-form">
             <div class="form-group"> <label for="codigoRegistro">CÓDIGO DE REGISTRO</label> <input type="text" id="codigoRegistro" readonly> </div>
             <div class="form-grid"> <div class="form-group"><label for="dataSolicitacao">DATA</label><input type="date" id="dataSolicitacao" required></div> <div class="form-group"><label for="solicitante">SOLICITANTE</label><input type="text" id="solicitante" placeholder="Nome do solicitante" required></div> <div class="form-group"> <label for="unidade">UNIDADE</label> <select id="unidade" required> <option value="" disabled selected>Selecione...</option> <option value="ABC">ABC</option><option value="TCV">TCV</option><option value="TBE">TBE</option> <option value="TSJ">TSJ</option><option value="TCA">TCA</option><option value="API">API</option><option value="TPH">TPH</option> <option value="TBL">TBL</option><option value="TCG">TCG</option><option value="MCD">MCD</option><option value="TCB">TCB</option> </select> </div> </div>
-            <div class="form-group"> <label for="motivo">MOTIVO</label> <select id="motivo" required> <option value="" disabled selected>Selecione...</option> <option value="Devolucoes">Devoluções</option> <option value="Avarias Externas">Avarias Externas (Freteiros)</option> <option value="Avaria Interna">Avaria Interna</option> <option value="Vencimento">Vencimento</option> <option value="Ajuste de Inventario">Ajuste de Inventário</option> </select> </div>
+            <div class="form-group"> <label for="motivo">MOTIVO</label> <select id="motivo" required> <option value="" disabled selected>Selecione...</option> <option value="Avarias Externas">Avarias Externas (Freteiros)</option> <option value="Avaria Interna">Avaria Interna</option> <option value="Vencimento">Vencimento</option> <option value="Ajuste de Inventario">Ajuste de Inventário</option> </select> </div>
             
             <div class="form-group">
                 <label for="justificativa">JUSTIFICATIVA (OBRIGATÓRIO)</label>
@@ -219,7 +219,7 @@
             });
             quantidadeProdutoInput.addEventListener('input', calcularPrecoTotalInput);
             motivoSelect.addEventListener('change', () => {
-                const showNotaFiscal = ['Devolucoes', 'Avarias Externas'].includes(motivoSelect.value);
+                const showNotaFiscal = ['Avarias Externas'].includes(motivoSelect.value);
                 notaFiscalGroup.style.display = showNotaFiscal ? 'block' : 'none';
                 notaFiscalInput.required = showNotaFiscal;
                 if (!showNotaFiscal) notaFiscalInput.value = '';
