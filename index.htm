@@ -19,6 +19,27 @@
         .product-section { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background-color: #fcfcfc; margin-top: 25px; }
         .product-section h2 { display: flex; align-items: center; gap: 10px; }
         .product-inputs { display: grid; grid-template-columns: 1fr 3fr 0.8fr 1.2fr 1.2fr; gap: 15px; align-items: flex-end; }
+        
+        /* NOVO ESTILO PARA DESLOCAR O AVISO PARA A COLUNA 2 (DESCRIÇÃO) */
+        .product-inputs .form-group:nth-child(2) {
+            position: relative; /* Container para posicionamento absoluto da small */
+        }
+        
+        .product-inputs .form-group:nth-child(2) small {
+            position: absolute; /* Retira do fluxo normal do grid */
+            top: 100%; /* Posiciona abaixo do input */
+            left: 0;
+            font-size: 0.8em; 
+            line-height: 1.2;
+            width: 150%; /* Permite que o texto se espalhe para a próxima coluna */
+            z-index: 10;
+            background: #fcfcfc; 
+            padding-top: 5px;
+            display: block; /* Garante que é um bloco */
+            color: #dc3545; 
+            font-weight: 500;
+        }
+
         .add-button-container { text-align: center; margin-top: 20px; }
         .product-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         .product-table th, .product-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
@@ -64,7 +85,15 @@
                 <h2>ITENS PARA BAIXA</h2>
                 <div class="product-inputs">
                     <div class="form-group"><label for="codigoProduto">Cód. Produto</label><input type="text" id="codigoProduto"></div>
-                    <div class="form-group"><label for="descricaoProduto">Descrição</label><input type="text" id="descricaoProduto" maxlength="60"></div>
+                    
+                    <div class="form-group">
+                        <label for="descricaoProduto">Descrição</label>
+                        <input type="text" id="descricaoProduto" maxlength="60">
+                        <small>
+                            🚨 Atenção:Caso for um pack,informe na descrição com "Pack".
+                        Exemplo: Bis Extra..... (Pack)
+                        </small>
+                    </div>
                     <div class="form-group"><label for="quantidadeProduto">Quant.</label><input type="number" id="quantidadeProduto" min="1" value="1"></div>
                     <div class="form-group"><label for="valorProduto">Valor Unit. (custo)</label><input type="text" id="valorProduto" placeholder="0,00"></div>
                     <div class="form-group"><label for="valorTotalProduto">Preço Total (R$)</label><input type="text" id="valorTotalProduto" placeholder="0,00" readonly></div>
@@ -226,10 +255,10 @@
                 if (motivoSelect.value === 'Ajuste de Inventario') {
                     operacaoFiscalSelect.innerHTML = ajusteOptions;
                     operacaoFiscalSelect.required = true; 
-                 } else {
+                   } else {
                     operacaoFiscalSelect.innerHTML = originalOperacoesFiscais;
                     operacaoFiscalSelect.required = true; 
-                 }
+                   }
             });
             document.getElementById('clear-signature-btn').addEventListener('click', () => {
                 signaturePad.clear();
@@ -247,8 +276,8 @@
                     alert('Por favor, preencha todos os campos do item (Cód, Descrição, Quant. e Valor Unit.).'); return;
                 }
                 if (parseFloat(inputs.quantidade.value) <= 0) { 
-                     alert('A quantidade deve ser maior que zero.'); return; 
-                 }
+                    alert('A quantidade deve ser maior que zero.'); return; 
+                   }
                 const valorUnitFormatado = inputs.valor.value;
                 const valorTotalFormatado = inputs.valorTotal.value;
                 const newRow = document.createElement('tr');
@@ -270,8 +299,8 @@
             });
             productListTbody.addEventListener('click', (event) => {
                 if (event.target.classList.contains('remove-product-btn')) { 
-                     event.target.closest('tr').remove(); 
-                     atualizarSomaTotal();
+                    event.target.closest('tr').remove(); 
+                    atualizarSomaTotal();
                 }
             });
 
@@ -283,8 +312,8 @@
                 if (anexoInput.files.length === 0) {
                     alert('É OBRIGATÓRIO anexar uma evidência (NF, Relatório, etc.).');
                     anexoInput.focus(); 
-                     return; 
-                 }
+                    return; 
+                   }
 
                 const file = anexoInput.files[0];
                 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
@@ -338,7 +367,7 @@
                 
                 const produtos = Array.from(productListTbody.rows).map(row => {
                     const valorUnitarioString = row.cells[3].innerText; 
-                    const valorTotalString = row.cells[4].innerText;   
+                    const valorTotalString = row.cells[4].innerText; 
                     
                     somaRecalculada += parseCurrency(valorTotalString);
 
@@ -372,47 +401,45 @@
                     }
                 };
                 
-                // ================== INÍCIO DA CORREÇÃO ==================
-                // Removido o "g" extra de "httpsg://"
+                // ================== URL DO POWER AUTOMATE ==================
                 const powerAutomateUrl = 'https://defaultaf73075ee5864d09b8b3d44b758089.52.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/63717d9cc7d3450faf2111398ab71cd3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=3g6ACT7sgX-s0kU_db9lnRIYQN-c0iCpsN9bEkzS3fs'; 
-                // =================== FIM DA CORREÇÃO ====================
 
-                 try {
-                    const response = await fetch(powerAutomateUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData),
-                    });
-                    
-                    if (!response.ok) {
-                        let errorBody = await response.text();
-                        try {
-                           errorBody = JSON.stringify(JSON.parse(errorBody), null, 2);
-                        } catch(e) {
-                           // usa o texto puro
+                    try {
+                        const response = await fetch(powerAutomateUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData),
+                        });
+                        
+                        if (!response.ok) {
+                            let errorBody = await response.text();
+                            try {
+                                errorBody = JSON.stringify(JSON.parse(errorBody), null, 2);
+                            } catch(e) {
+                                // usa o texto puro
+                            }
+                            console.error('Resposta do Servidor (Erro):', errorBody);
+                            throw new Error(`Erro do servidor: ${response.status}. Resposta: ${errorBody}`); 
                         }
-                        console.error('Resposta do Servidor (Erro):', errorBody);
-                        throw new Error(`Erro do servidor: ${response.status}. Resposta: ${errorBody}`); 
-                    }
-                    
-                    showStatusMessage('Solicitação de baixa enviada com sucesso!', 'success');
-                    form.reset();
-                    motivoSelect.dispatchEvent(new Event('change'));
-                    signaturePad.clear();
-                    productListTbody.innerHTML = '';
-                    atualizarSomaTotal(); // Limpa o total
-                    confirmationSection.style.display = 'none';
-                    submitBtn.style.display = 'block';
-                    confirmCheckbox.checked = false;
-                    setInitialCode();
+                        
+                        showStatusMessage('Solicitação de baixa enviada com sucesso!', 'success');
+                        form.reset();
+                        motivoSelect.dispatchEvent(new Event('change'));
+                        signaturePad.clear();
+                        productListTbody.innerHTML = '';
+                        atualizarSomaTotal(); // Limpa o total
+                        confirmationSection.style.display = 'none';
+                        submitBtn.style.display = 'block';
+                        confirmCheckbox.checked = false;
+                        setInitialCode();
 
-                } catch (error) {
-                    console.error('Erro ao enviar solicitação:', error);
-                    showStatusMessage('Falha ao enviar a solicitação. Verifique o console (F12) para mais detalhes.', 'error');
-                } finally {
-                    finalSubmitBtn.disabled = false;
-                    finalSubmitBtn.textContent = 'Confirmar e Enviar Solicitação';
-                }
+                    } catch (error) {
+                        console.error('Erro ao enviar solicitação:', error);
+                        showStatusMessage('Falha ao enviar a solicitação. Verifique o console (F12) para mais detalhes.', 'error');
+                    } finally {
+                        finalSubmitBtn.disabled = false;
+                        finalSubmitBtn.textContent = 'Confirmar e Enviar Solicitação';
+                    }
             });
             
             // Função de Status (sem alteração)
